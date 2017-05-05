@@ -11,6 +11,31 @@
     <!-- 序列模块的相关SQL -->
 	<sqls>
 	
+		<!-- 查询序列信息 -->
+		<sql id="XSQL_Sequence_QueryByName">
+		
+			<dataSourceGroup ref="DSG_Sequence" />
+			
+			<content>
+				<![CDATA[
+				SELECT  A.name
+				       ,A.stepSize
+				       ,A.cacheSize
+				       ,A.valueBegin
+				  FROM  TSequence  A
+				 WHERE  A.name = ':name'  FOR UPDATE
+				]]>
+			</content>
+			
+			<result>
+                <row>org.hy.sequence.model.SequenceInfo</row>
+                <cfill>setter(colValue)</cfill>
+            </result>
+			
+		</sql>
+		
+		
+	
 		<!-- 更新序列信息 -->
 		<sql id="XSQL_Sequence_UpdateValueBegin">
 		
@@ -27,29 +52,24 @@
 		</sql>
 		
 		
-	
-		<!-- 查询序列信息 -->
-		<sql id="XSQL_Sequence_QueryByName">
 		
-			<dataSourceGroup ref="DSG_Sequence" />
+		<!-- 生成序列 -->
+		<sqlGroup id="GXSQL_Sequence">
+		
+			<sqlNode>
+				<sql  ref="XSQL_Sequence_QueryByName" />
+				<type ref="this.$Type_Query" />
+				<oneConnection>true</oneConnection>
+				<returnID>Sequence</returnID>
+			</sqlNode>
 			
-			<content>
-				<![CDATA[
-				SELECT  A.name
-				       ,A.stepSize
-				       ,A.cacheSize
-				       ,A.valueBegin
-				  FROM  TSequence  A
-				 WHERE  A.name = ':name'
-				]]>
-			</content>
+			<sqlNode>
+				<sql  ref="XSQL_Sequence_UpdateValueBegin" />
+				<type ref="this.$Type_ExecuteUpdate" />
+				<afterCommit>true</afterCommit>
+			</sqlNode>
 			
-			<result>
-                <row>org.hy.sequence.model.SequenceInfo</row>
-                <cfill>setter(colValue)</cfill>
-            </result>
-			
-		</sql>
+		</sqlGroup>
 		
 	</sqls>
 	

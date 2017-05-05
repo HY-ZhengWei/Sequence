@@ -1,14 +1,14 @@
 package org.hy.sequence.dao;
 
-import java.sql.Connection;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
 import org.hy.common.Help;
 import org.hy.common.xml.XJava;
-import org.hy.common.xml.XSQL;
 import org.hy.common.xml.annotation.Xjava;
+import org.hy.common.xml.plugins.XSQLGroup;
+import org.hy.common.xml.plugins.XSQLGroupResult;
 import org.hy.sequence.model.SequenceInfo;
 
 
@@ -92,31 +92,17 @@ public class SequenceDAO
     @SuppressWarnings("unchecked")
     private SequenceInfo getSequence(String i_SequenceName)
     {
+        XSQLGroup          v_GXSQL     = XJava.getXSQLGroup("GXSQL_Sequence");
+        XSQLGroupResult    v_Ret       = v_GXSQL.executes(new SequenceInfo(i_SequenceName));
         List<SequenceInfo> v_Sequences = null;
-        Connection         v_Conn      = null;
-        XSQL               v_XSQL      = XJava.getXSQL("XSQL_Sequence_UpdateValueBegin");
-        SequenceInfo       v_Param     = new SequenceInfo();
-        v_Param.setName(i_SequenceName);
         
-        try
+        if ( !v_Ret.isSuccess() )
         {
-            v_Conn = v_XSQL.getConnection();
-            
-            v_Conn.setAutoCommit(false);
-            
-            v_XSQL.executeUpdate(v_Param ,v_Conn);
-            v_Sequences = (List<SequenceInfo>)XJava.getXSQL("XSQL_Sequence_QueryByName").query(v_Param ,v_Conn);
-            
-            v_Conn.commit();
-            v_Conn.setAutoCommit(true);
+            v_GXSQL.logReturn(v_Ret);
         }
-        catch (Exception exce)
+        else
         {
-            exce.printStackTrace();
-        }
-        finally
-        {
-            v_XSQL.closeDB(null ,null ,v_Conn);
+            v_Sequences = (List<SequenceInfo>)v_Ret.getReturns().get("Sequence");
         }
         
         if ( Help.isNull(v_Sequences) )
@@ -142,6 +128,7 @@ public class SequenceDAO
             v_Sequence.setValueBegin(0);
         }
         
+        v_Sequence.setValueBegin(v_Sequence.getValueBegin().intValue() + v_Sequence.getCacheSize().intValue());
         v_Sequence.setCurrentValue(0);
         
         return v_Sequence;

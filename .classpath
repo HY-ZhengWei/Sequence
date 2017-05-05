@@ -9,9 +9,10 @@
 	<classpathentry kind="lib" path="lib/mchange-commons-java-0.2.3.jar"/>
 	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.30-bin.jar"/>
 	<classpathentry kind="lib" path="lib/servlet-api.jar"/>
-	<classpathentry kind="lib" path="lib/hy.common.base.jar"/>
-	<classpathentry kind="lib" path="lib/hy.common.db.jar"/>
+	<classpathentry kind="lib" path="lib/hy.common.base.jar" sourcepath="/hy.common.base"/>
+	<classpathentry kind="lib" path="lib/hy.common.db.jar" sourcepath="/hy.common.db"/>
 	<classpathentry kind="lib" path="lib/hy.common.file.jar"/>
-	<classpathentry kind="lib" path="lib/xjava.jar"/>
+	<classpathentry kind="lib" path="lib/xjava.jar" sourcepath="/XJava"/>
+	<classpathentry kind="lib" path="lib/hy.common.tpool.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

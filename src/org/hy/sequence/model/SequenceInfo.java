@@ -36,6 +36,18 @@ public class SequenceInfo implements Serializable
 
     
     
+    public SequenceInfo()
+    {
+        this(null);
+    }
+    
+    
+    public SequenceInfo(String i_Name)
+    {
+        this.name = i_Name;
+    }
+    
+    
     /**
      * 获取：序列名称
      */
